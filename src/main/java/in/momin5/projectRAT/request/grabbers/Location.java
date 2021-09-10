@@ -30,7 +30,7 @@ public class Location implements Request {
         String lat 		= (String) response.get("latitude");
         String lon 		= (String) response.get("longitude");
 
-        message = ip + "\n" + country + "\n" + state + "\n" + city + "\n" + zip + "\n" + lat + "\n" + lon;
+        message = String.format("IP: %s \nCountry: %s \nState: %s \nCity: %s \nZip Code: %s \nLatitude: %s \nLongitude: %s",ip,country,state,city,zip,lat,lon);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class Location implements Request {
     }
 
     @Override
-    public File getFile() {
+    public File[] getFiles() {
         return null;
     }
 }
