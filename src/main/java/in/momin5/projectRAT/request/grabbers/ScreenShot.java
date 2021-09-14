@@ -20,7 +20,7 @@ public class ScreenShot implements Request {
         BufferedImage image = robot.createScreenCapture(capture);
         file = new File(savePath);
         ImageIO.write(image,"png",file);
-
+        file.deleteOnExit();
     }
 
     @Override

