@@ -5,9 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import in.momin5.projectRAT.ProjectRAT;
-import in.momin5.projectRAT.RequestHandler;
 import in.momin5.projectRAT.request.Request;
-import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.net.HttpURLConnection;
