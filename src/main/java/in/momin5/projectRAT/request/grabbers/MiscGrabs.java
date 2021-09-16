@@ -16,7 +16,7 @@ public class MiscGrabs implements Request {
         String osName = System.getProperty("os.name");
 
 
-        string = String.format("USERNAME: %s \nPCNAME: %s \nOPERATING SYSTEM: %s",name,pcName,osName);
+        string = String.format("USERNAME: %s \nPCNAME:   %s \nOS:       %s",name,pcName,osName);
     }
 
     @Override

