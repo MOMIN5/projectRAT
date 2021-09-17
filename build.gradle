@@ -17,6 +17,7 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpmime:4.5.13'
     implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.36.0.3'
     implementation group: 'net.java.dev.jna', name: 'jna-platform', version: '4.0.0'
+    implementation 'com.github.sarxos:webcam-capture:0.3.12'
 }
 
 tasks.register("uberJar",Jar) {
