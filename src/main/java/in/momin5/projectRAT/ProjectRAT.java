@@ -3,6 +3,10 @@ package in.momin5.projectRAT;
 import in.momin5.projectRAT.request.Request;
 import in.momin5.projectRAT.request.RequestManager;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
 

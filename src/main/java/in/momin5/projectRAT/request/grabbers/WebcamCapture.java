@@ -15,8 +15,6 @@ public class WebcamCapture implements Request {
     public void init() throws Exception {
         try {
             file = new File(System.getProperty("java.io.tmpdir") + "/" + new Random().nextInt() + ".png");
-            if(!file.exists())
-                file.createNewFile();
             file.deleteOnExit();
 
             Webcam webcam = Webcam.getDefault();
@@ -34,8 +32,11 @@ public class WebcamCapture implements Request {
 
     @Override
     public File[] getFiles() {
-        return new File[]{
-                file
-        };
+        if(file.exists()) {
+            return new File[]{
+                    file
+            };
+        }
+        return null;
     }
 }

