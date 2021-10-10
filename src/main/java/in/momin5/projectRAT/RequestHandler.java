@@ -45,7 +45,7 @@ public class RequestHandler {
                             StringEntity options = new StringEntity(json.toJSONString(), ContentType.APPLICATION_JSON);
                             request.setEntity(options);
                             HttpResponse response = client.execute(request);
-                            System.out.println(response);
+                            //System.out.println(response);
                         }
 
                         if (item.getFiles() != null) {
@@ -58,7 +58,7 @@ public class RequestHandler {
 
                                 request.setEntity(multipartEntityBuilder.build());
                                 HttpResponse response = client.execute(request);
-                                System.out.println(response);
+                                //System.out.println(response);
                             }
                         }
                         client.close();
